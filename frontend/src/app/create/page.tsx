@@ -302,18 +302,6 @@ export default function CreateDAOPage() {
                       <span className="text-muted-foreground">Category:</span>
                       <Badge variant="secondary">{formData.category}</Badge>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Token:</span>
-                      <span className="font-medium">
-                        {formData.tokenSymbol} ({formData.tokenName})
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Supply:</span>
-                      <span className="font-medium">
-                        {parseInt(formData.initialSupply).toLocaleString()}
-                      </span>
-                    </div>
                   </div>
                 </div>
 
@@ -361,10 +349,6 @@ export default function CreateDAOPage() {
                     <div className="flex justify-between">
                       <span>DAO Contract:</span>
                       <span>~0.05 MON</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Token Contract:</span>
-                      <span>~0.03 MON</span>
                     </div>
                     <div className="flex justify-between font-medium">
                       <span>Total:</span>

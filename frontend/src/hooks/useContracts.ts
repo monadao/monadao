@@ -233,7 +233,7 @@ export function useAllTasks() {
   const [tasks, setTasks] = useState<any[]>([]);
 
   useEffect(() => {
-    if (!taskCounter) return;
+    if (typeof window === 'undefined' || !taskCounter) return;
 
     const fetchTasks = async () => {
       const taskList = [];
@@ -286,7 +286,7 @@ export function useMyTasks() {
   const [myTasks, setMyTasks] = useState<any[]>([]);
 
   useEffect(() => {
-    if (!address || !allTasks.length) return;
+    if (typeof window === 'undefined' || !address || !allTasks.length) return;
 
     const fetchMyTasks = async () => {
       const userTasks = [];

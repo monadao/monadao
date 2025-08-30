@@ -4,7 +4,11 @@ import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
 import { Suspense } from 'react';
 import '@/styles/globals.css';
-import { Web3Provider } from '@/providers/Web3Provider';
+import dynamic from 'next/dynamic';
+
+const Web3Provider = dynamic(() => import('@/providers/Web3Provider').then(mod => ({ default: mod.Web3Provider })), {
+  ssr: false,
+});
 
 export const metadata: Metadata = {
   title: 'MonaDAO - Challenge-Based DAO Platform',
