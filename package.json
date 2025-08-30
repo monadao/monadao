@@ -4,20 +4,18 @@
   "private": true,
   "description": "MonadDAO - Decentralized Autonomous Organization on Monad",
   "workspaces": [
-    "contracts",
-    "frontend"
+    "contracts"
   ],
   "scripts": {
-    "dev": "npm run dev --workspace=frontend",
-    "build": "npm run build --workspaces",
-    "test": "npm run test --workspaces",
-    "lint": "npm run lint --workspaces",
-    "clean": "rm -rf node_modules && npm run clean --workspaces",
+    "dev": "echo 'Frontend has been removed. Use contracts only.'",
+    "build": "npm run build --workspace=contracts",
+    "test": "npm run test --workspace=contracts",
+    "lint": "npm run lint --workspace=contracts",
+    "clean": "rm -rf node_modules && npm run clean --workspace=contracts",
     "contracts:compile": "npm run compile --workspace=contracts",
     "contracts:test": "npm run test --workspace=contracts",
     "contracts:deploy": "npm run deploy --workspace=contracts",
-    "frontend:dev": "npm run dev --workspace=frontend",
-    "frontend:build": "npm run build --workspace=frontend"
+
   },
   "keywords": [
     "dao",
