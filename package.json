@@ -4,7 +4,8 @@
   "private": true,
   "description": "MonaDAO - Decentralized Autonomous Organization on Monad",
   "workspaces": [
-    "contracts"
+    "contracts",
+    "frontend"
   ],
   "scripts": {
     "dev": "echo 'Frontend has been removed. Use contracts only.'",

@@ -5,15 +5,28 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Navbar } from '@/components/layout/Navbar';
+import { useAllTasks, useDAOStats } from '@/hooks/useContracts';
 
 export default function HomePage() {
-  // Sample data for DAO ranking
-  const daoRankings = [
-    { rank: 1, name: 'Seoul', value: '450%', icon: '🌟' },
-    { rank: 2, name: 'DAO', value: '200%', id: '75002', icon: '88' },
-    { rank: 3, name: 'DAO Seul', value: '220%', id: '310001', icon: 'B' },
-    { rank: 4, name: 'Seoul', value: '150%', id: '30001', icon: 'S' },
-  ];
+  const allTasks = useAllTasks();
+  const daos = useDAOStats();
+
+  const stats = {
+    totalChallenges: allTasks.length,
+    activeChallenges: allTasks.filter(task => task && task.status === 1).length,
+    totalParticipants: allTasks.reduce(
+      (sum, task) => sum + (task?.currentParticipants || 0),
+      0
+    ),
+    totalRewards: allTasks.reduce(
+      (sum, task) => sum + parseFloat(task?.totalReward || '0'),
+      0
+    ),
+  };
+
+  const topDAOs = daos
+    .sort((a, b) => b.totalRewards - a.totalRewards)
+    .slice(0, 4);
 
   // Background style
   const backgroundStyle = {};
@@ -59,36 +72,46 @@ export default function HomePage() {
           <Card className="bg-card border-border">
             <CardContent className="p-6">
               <h2 className="text-foreground mb-6 text-2xl font-bold">
-                DAO Ranking
+                Top DAOs by TVL
               </h2>
               <div className="space-y-4">
                 <div className="text-muted-foreground mb-2 grid grid-cols-4 text-sm">
                   <div>Rank</div>
-                  <div>DAO</div>
-                  <div className="text-right">ID</div>
-                  <div className="text-right">Value</div>
+                  <div>DAO Creator</div>
+                  <div className="text-right">Challenges</div>
+                  <div className="text-right">TVL (USDT)</div>
                 </div>
 
-                {daoRankings.map((dao, index) => (
+                {topDAOs.map((dao, index) => (
                   <div
-                    key={index}
+                    key={dao.id}
                     className="grid grid-cols-4 items-center border-b border-gray-800 py-2 last:border-0"
                   >
                     <div className="flex items-center">
                       <div className="mr-2 flex h-6 w-6 items-center justify-center rounded-full bg-gray-800 text-xs">
-                        {dao.icon}
+                        {index === 0
+                          ? '🥇'
+                          : index === 1
+                            ? '🥈'
+                            : index === 2
+                              ? '🥉'
+                              : '🏆'}
                       </div>
-                      <span>{dao.rank}</span>
+                      <span>{index + 1}</span>
                     </div>
-                    <div>{dao.name}</div>
-                    <div className="text-right">{dao.id || ''}</div>
-                    <div
-                      className={`text-right font-medium ${dao.value.includes('4') ? 'text-green-500' : 'text-green-400'}`}
-                    >
-                      {dao.value}
+                    <div className="text-sm">{dao.name}</div>
+                    <div className="text-right">{dao.totalChallenges}</div>
+                    <div className="text-right font-medium text-green-400">
+                      ${dao.totalRewards.toFixed(0)}
                     </div>
                   </div>
                 ))}
+
+                {topDAOs.length === 0 && (
+                  <div className="text-muted-foreground py-4 text-center">
+                    No DAOs found. Create the first one!
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>

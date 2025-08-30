@@ -6,64 +6,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Navbar } from '@/components/layout/Navbar';
 import { ArrowRight, Users, Trophy, Target } from 'lucide-react';
+import { useDAOStats } from '@/hooks/useContracts';
 
 export default function DAOsPage() {
-  // Sample data for DAOs
-  const daos = [
-    {
-      id: 1,
-      name: 'FitDAO',
-      description:
-        'Community focused on fitness challenges and healthy lifestyle',
-      category: 'Health & Fitness',
-      members: 1245,
-      activeChallenges: 3,
-      completedChallenges: 12,
-      successRate: 78,
-    },
-    {
-      id: 2,
-      name: 'BookLoversDAO',
-      description:
-        'For book enthusiasts who want to read more and discuss literature',
-      category: 'Education',
-      members: 892,
-      activeChallenges: 2,
-      completedChallenges: 8,
-      successRate: 85,
-    },
-    {
-      id: 3,
-      name: 'DevDAO',
-      description: 'Developers community focused on learning new technologies',
-      category: 'Technology',
-      members: 1567,
-      activeChallenges: 5,
-      completedChallenges: 15,
-      successRate: 62,
-    },
-    {
-      id: 4,
-      name: 'MindfulDAO',
-      description:
-        'Focused on mental health, meditation and mindfulness practices',
-      category: 'Personal Development',
-      members: 723,
-      activeChallenges: 2,
-      completedChallenges: 6,
-      successRate: 91,
-    },
-    {
-      id: 5,
-      name: 'BuilderDAO',
-      description: 'For Web3 builders creating decentralized applications',
-      category: 'Technology',
-      members: 456,
-      activeChallenges: 1,
-      completedChallenges: 3,
-      successRate: 45,
-    },
-  ];
+  const daos = useDAOStats();
 
   const backgroundStyle = {};
 
@@ -120,9 +66,11 @@ export default function DAOsPage() {
                   <div className="mb-4 grid grid-cols-3 gap-2">
                     <div className="bg-background/50 flex flex-col items-center rounded-md p-2">
                       <Users className="text-muted-foreground mb-1 h-4 w-4" />
-                      <span className="text-sm font-medium">{dao.members}</span>
+                      <span className="text-sm font-medium">
+                        {dao.totalParticipants}
+                      </span>
                       <span className="text-muted-foreground text-xs">
-                        Members
+                        Participants
                       </span>
                     </div>
                     <div className="bg-background/50 flex flex-col items-center rounded-md p-2">
@@ -147,9 +95,10 @@ export default function DAOsPage() {
 
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground text-sm">
-                      {dao.completedChallenges} completed challenges
+                      {dao.completedChallenges} completed • $
+                      {dao.totalRewards.toFixed(0)} USDT
                     </span>
-                    <Link href={`/daos/${dao.id}`}>
+                    <Link href={`/daos/${dao.creator}`}>
                       <Button
                         variant="ghost"
                         className="text-primary hover:text-primary hover:bg-primary/10 h-auto p-2"

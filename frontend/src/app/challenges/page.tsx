@@ -17,6 +17,7 @@ import {
   AlertCircle,
   Users,
 } from 'lucide-react';
+import { useMyTasks, useAllTasks } from '@/hooks/useContracts';
 
 const myChallenges = [
   {
@@ -91,6 +92,8 @@ const availableChallenges = [
 
 export default function ChallengesPage() {
   const [activeTab, setActiveTab] = useState('active');
+  const myTasks = useMyTasks();
+  const allTasks = useAllTasks();
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -141,7 +144,7 @@ export default function ChallengesPage() {
             </TabsList>
 
             <TabsContent value="active" className="space-y-4">
-              {myChallenges.map(challenge => (
+              {myTasks.map(challenge => (
                 <Card
                   key={challenge.id}
                   className="border-border bg-card/80 backdrop-blur-sm"
@@ -153,12 +156,32 @@ export default function ChallengesPage() {
                           <CardTitle className="text-lg">
                             {challenge.title}
                           </CardTitle>
-                          <Badge className={getStatusColor(challenge.status)}>
-                            {challenge.status}
+                          <Badge
+                            className={getStatusColor(
+                              challenge.status === 0
+                                ? 'open'
+                                : challenge.status === 1
+                                  ? 'active'
+                                  : challenge.status === 2
+                                    ? 'review'
+                                    : challenge.status === 3
+                                      ? 'completed'
+                                      : 'failed'
+                            )}
+                          >
+                            {challenge.status === 0
+                              ? 'Open'
+                              : challenge.status === 1
+                                ? 'Active'
+                                : challenge.status === 2
+                                  ? 'Under Review'
+                                  : challenge.status === 3
+                                    ? 'Completed'
+                                    : 'Failed'}
                           </Badge>
                         </div>
                         <p className="text-muted-foreground text-sm">
-                          by {challenge.daoName}
+                          by {challenge.creator}
                         </p>
                       </div>
                       {challenge.result && (
@@ -218,7 +241,7 @@ export default function ChallengesPage() {
                         <div className="flex items-center gap-1">
                           <Users className="h-3 w-3" />
                           <span className="text-sm font-medium">
-                            {challenge.participants}
+                            {challenge.currentParticipants}
                           </span>
                         </div>
                       </div>
@@ -266,80 +289,94 @@ export default function ChallengesPage() {
             </TabsContent>
 
             <TabsContent value="available" className="space-y-4">
-              {availableChallenges.map(challenge => (
-                <Card
-                  key={challenge.id}
-                  className="border-border bg-card/80 backdrop-blur-sm"
-                >
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                          <CardTitle className="text-lg">
-                            {challenge.title}
-                          </CardTitle>
-                          <Badge variant="secondary">
-                            {challenge.category}
-                          </Badge>
-                        </div>
-                        <p className="text-muted-foreground text-sm">
-                          by {challenge.daoName}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm font-medium">
-                          ${challenge.entryFee} USDT
-                        </p>
-                        <p className="text-muted-foreground text-xs">
-                          Entry Fee
-                        </p>
-                      </div>
-                    </div>
-                  </CardHeader>
+              {allTasks
+                .filter(task => task && task.status === 0)
+                .map(
+                  challenge =>
+                    challenge && (
+                      <Card
+                        key={challenge.id}
+                        className="border-border bg-card/80 backdrop-blur-sm"
+                      >
+                        <CardHeader>
+                          <div className="flex items-start justify-between">
+                            <div className="space-y-2">
+                              <div className="flex items-center gap-2">
+                                <CardTitle className="text-lg">
+                                  {challenge.title}
+                                </CardTitle>
+                                <Badge variant="secondary">
+                                  {challenge.category}
+                                </Badge>
+                              </div>
+                              <p className="text-muted-foreground text-sm">
+                                by {challenge.creator}
+                              </p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-sm font-medium">
+                                ${challenge.participationFee} USDT
+                              </p>
+                              <p className="text-muted-foreground text-xs">
+                                Entry Fee
+                              </p>
+                            </div>
+                          </div>
+                        </CardHeader>
 
-                  <CardContent className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                      <div className="space-y-1">
-                        <p className="text-muted-foreground text-xs">
-                          Participants
-                        </p>
-                        <span className="text-sm font-medium">
-                          {challenge.participants}/{challenge.maxParticipants}
-                        </span>
-                      </div>
-                      <div className="space-y-1">
-                        <p className="text-muted-foreground text-xs">
-                          Success Rate
-                        </p>
-                        <span className="text-sm font-medium text-green-500">
-                          {challenge.successRate}%
-                        </span>
-                      </div>
-                      <div className="space-y-1">
-                        <p className="text-muted-foreground text-xs">Ends</p>
-                        <span className="text-sm font-medium">
-                          {challenge.endDate}
-                        </span>
-                      </div>
-                      <div className="space-y-1">
-                        <p className="text-muted-foreground text-xs">
-                          Spots Left
-                        </p>
-                        <span className="text-sm font-medium">
-                          {challenge.maxParticipants - challenge.participants}
-                        </span>
-                      </div>
-                    </div>
+                        <CardContent className="space-y-4">
+                          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                            <div className="space-y-1">
+                              <p className="text-muted-foreground text-xs">
+                                Participants
+                              </p>
+                              <span className="text-sm font-medium">
+                                {challenge.currentParticipants}/
+                                {challenge.maxParticipants}
+                              </span>
+                            </div>
+                            <div className="space-y-1">
+                              <p className="text-muted-foreground text-xs">
+                                Success Rate
+                              </p>
+                              <span className="text-sm font-medium text-green-500">
+                                {challenge.successRate}%
+                              </span>
+                            </div>
+                            <div className="space-y-1">
+                              <p className="text-muted-foreground text-xs">
+                                Ends
+                              </p>
+                              <span className="text-sm font-medium">
+                                {challenge.endDate}
+                              </span>
+                            </div>
+                            <div className="space-y-1">
+                              <p className="text-muted-foreground text-xs">
+                                Spots Left
+                              </p>
+                              <span className="text-sm font-medium">
+                                {challenge.maxParticipants -
+                                  challenge.currentParticipants}
+                              </span>
+                            </div>
+                          </div>
 
-                    <div className="flex gap-2">
-                      <Button>
-                        Join Challenge (${challenge.entryFee} USDT)
-                      </Button>
-                      <Button variant="outline">View Details</Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                          <div className="flex gap-2">
+                            <Link href={`/challenge/${challenge.id}`}>
+                              <Button>
+                                Join Challenge (${challenge.participationFee}{' '}
+                                USDT)
+                              </Button>
+                            </Link>
+                            <Link href={`/challenge/${challenge.id}`}>
+                              <Button variant="outline">View Details</Button>
+                            </Link>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )
+                )}
             </TabsContent>
           </Tabs>
         </div>

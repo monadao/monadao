@@ -17,9 +17,11 @@ import {
   Target,
 } from 'lucide-react';
 import Link from 'next/link';
+import { useMonaDAO } from '@/hooks/useContracts';
 
 export default function CreateDAOPage() {
   const [step, setStep] = useState(1);
+  const { createTask, isPending } = useMonaDAO();
   const [formData, setFormData] = useState({
     // DAO Info
     name: '',
@@ -49,6 +51,33 @@ export default function CreateDAOPage() {
 
   const handleNext = () => setStep(step + 1);
   const handleBack = () => setStep(step - 1);
+
+  const handleCreateChallenge = async () => {
+    if (
+      !formData.challengeTitle ||
+      !formData.challengeDescription ||
+      !formData.entryFee ||
+      !formData.maxParticipants ||
+      !formData.duration
+    ) {
+      return;
+    }
+
+    try {
+      const deadline = new Date();
+      deadline.setDate(deadline.getDate() + parseInt(formData.duration));
+
+      await createTask(
+        formData.challengeTitle,
+        formData.challengeDescription,
+        formData.entryFee,
+        parseInt(formData.maxParticipants),
+        deadline
+      );
+    } catch (error) {
+      console.error('Failed to create challenge:', error);
+    }
+  };
 
   const backgroundStyle = {};
 
@@ -348,7 +377,9 @@ export default function CreateDAOPage() {
                   <Button variant="outline" onClick={handleBack}>
                     Back
                   </Button>
-                  <Button>Deploy DAO & Challenge</Button>
+                  <Button onClick={handleCreateChallenge} disabled={isPending}>
+                    {isPending ? 'Creating...' : 'Create Challenge'}
+                  </Button>
                 </div>
               </CardContent>
             </Card>
