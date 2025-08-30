@@ -2,11 +2,8 @@ import { getDefaultConfig } from '@rainbow-me/rainbowkit';
 
 import {
   metaMaskWallet,
-  walletConnectWallet,
-  coinbaseWallet,
+  injectedWallet,
   phantomWallet,
-  trustWallet,
-  ledgerWallet,
 } from '@rainbow-me/rainbowkit/wallets';
 
 // Define Monad networks
@@ -37,27 +34,13 @@ export const monadTestnet = {
 
 export const config = getDefaultConfig({
   appName: 'MonadDAO',
-  projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || 'demo-project-id',
+  projectId: '3314f21eac5f2fd48f68c0f7a2b9208a', // WalletConnect 프로젝트 ID
   wallets: [
     {
-      groupName: 'Popular',
-      wallets: [
-        metaMaskWallet,
-        phantomWallet,
-        coinbaseWallet,
-        walletConnectWallet,
-      ],
-    },
-    {
-      groupName: 'More',
-      wallets: [
-        trustWallet,
-        ledgerWallet,
-      ],
+      groupName: 'Recommended',
+      wallets: [metaMaskWallet, injectedWallet, phantomWallet],
     },
   ],
-  chains: [
-    monadTestnet,
-  ],
+  chains: [monadTestnet],
   ssr: true,
 });
