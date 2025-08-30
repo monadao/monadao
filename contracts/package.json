@@ -2,7 +2,7 @@
   "name": "@monadao/contracts",
   "version": "1.0.0",
   "private": true,
-  "description": "MonadDAO Smart Contracts",
+  "description": "MonaDAO Smart Contracts",
   "scripts": {
     "compile": "hardhat compile",
     "test": "hardhat test",
