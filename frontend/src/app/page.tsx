@@ -1,14 +1,19 @@
-import Layout from '@/components/layout/Layout';
-import HeroSection from '@/components/dashboard/HeroSection';
-import ChallengesSection from '@/components/dashboard/ChallengesSection';
-import BuybackBurnSection from '@/components/dashboard/BuybackBurnSection';
+import { Sidebar } from '@/components/layout/Sidebar';
+import { NewHeader } from '@/components/layout/NewHeader';
+import { ChallengeOnboarding } from '@/components/dashboard/ChallengeOnboarding';
+import { ChallengesList } from '@/components/dashboard/ChallengesList';
 
 export default function HomePage() {
   return (
-    <Layout>
-      <HeroSection />
-      <ChallengesSection />
-      <BuybackBurnSection />
-    </Layout>
+    <div className="bg-background flex min-h-screen">
+      <Sidebar />
+      <div className="flex flex-1 flex-col">
+        <NewHeader />
+        <main className="flex-1 space-y-6 p-6">
+          <ChallengeOnboarding />
+          <ChallengesList />
+        </main>
+      </div>
+    </div>
   );
 }

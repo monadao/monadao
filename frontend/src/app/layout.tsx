@@ -1,28 +1,30 @@
+import type React from 'react';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { GeistSans } from 'geist/font/sans';
+import { GeistMono } from 'geist/font/mono';
+import { Suspense } from 'react';
 import '@/styles/globals.css';
 import { Web3Provider } from '@/providers/Web3Provider';
 
-const inter = Inter({ subsets: ['latin'] });
-
 export const metadata: Metadata = {
-  title: 'MonadDAO - Decentralized Governance on Monad',
+  title: 'MonaDAO - Challenge-Based DAO Platform',
   description:
-    'A decentralized autonomous organization building the future of governance on Monad blockchain.',
-  keywords: ['DAO', 'Monad', 'Blockchain', 'Governance', 'DeFi'],
-  authors: [{ name: 'MonadDAO Team' }],
-  viewport: 'width=device-width, initial-scale=1',
+    "Decentralized challenge platform where failed participants' fees burn tokens forever",
+  keywords: ['DAO', 'Monad', 'Blockchain', 'Challenges', 'DeFi', 'Burn'],
+  authors: [{ name: 'MonaDAO Team' }],
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <Web3Provider>{children}</Web3Provider>
+    <html lang="en" className="dark">
+      <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable}`}>
+        <Web3Provider>
+          <Suspense fallback={null}>{children}</Suspense>
+        </Web3Provider>
       </body>
     </html>
   );
