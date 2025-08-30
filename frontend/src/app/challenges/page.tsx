@@ -1,13 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { Sidebar } from '@/components/layout/Sidebar';
-import { NewHeader } from '@/components/layout/NewHeader';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Navbar } from '@/components/layout/Navbar';
 import {
   Calendar,
   Clock,
@@ -16,7 +16,6 @@ import {
   CheckCircle,
   AlertCircle,
   Users,
-  Target,
 } from 'lucide-react';
 
 const myChallenges = [
@@ -110,227 +109,241 @@ export default function ChallengesPage() {
     return result === 'success' ? 'text-green-500' : 'text-red-500';
   };
 
+  const backgroundStyle = {};
+
   return (
-    <div className="bg-background flex min-h-screen">
-      <Sidebar />
-      <div className="flex flex-1 flex-col">
-        <NewHeader />
-        <main className="flex-1 p-6">
-          <div className="mx-auto max-w-4xl space-y-6">
-            <div>
-              <h1 className="text-foreground text-2xl font-bold">
-                My Challenges
-              </h1>
-              <p className="text-muted-foreground">
-                Track your challenge participation and progress
-              </p>
-            </div>
+    <div className="bg-background min-h-screen">
+      <Navbar />
 
-            <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList>
-                <TabsTrigger value="active">Active & Completed</TabsTrigger>
-                <TabsTrigger value="available">Available</TabsTrigger>
-              </TabsList>
+      <main className="flex-1 p-6">
+        <div className="mx-auto max-w-4xl space-y-6">
+          <div className="mb-8 text-center">
+            <h1 className="text-foreground mb-4 text-4xl font-bold">
+              DAO Challenges
+            </h1>
+            <p className="text-muted-foreground text-lg">
+              Track your challenge participation and progress
+            </p>
+          </div>
 
-              <TabsContent value="active" className="space-y-4">
-                {myChallenges.map(challenge => (
-                  <Card key={challenge.id}>
-                    <CardHeader>
-                      <div className="flex items-start justify-between">
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-2">
-                            <CardTitle className="text-lg">
-                              {challenge.title}
-                            </CardTitle>
-                            <Badge className={getStatusColor(challenge.status)}>
-                              {challenge.status}
-                            </Badge>
-                          </div>
-                          <p className="text-muted-foreground text-sm">
-                            by {challenge.daoName}
-                          </p>
-                        </div>
-                        {challenge.result && (
-                          <div
-                            className={`text-right ${getResultColor(challenge.result)}`}
-                          >
-                            <div className="flex items-center gap-1">
-                              {challenge.result === 'success' ? (
-                                <CheckCircle className="h-4 w-4" />
-                              ) : (
-                                <AlertCircle className="h-4 w-4" />
-                              )}
-                              <span className="font-medium capitalize">
-                                {challenge.result}
-                              </span>
-                            </div>
-                            {challenge.reward && (
-                              <p className="mt-1 text-sm">
-                                +${challenge.reward} earned
-                              </p>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </CardHeader>
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="w-full"
+          >
+            <TabsList className="mb-6 grid w-full grid-cols-2">
+              <TabsTrigger value="active" className="py-3 text-lg">
+                Active & Completed
+              </TabsTrigger>
+              <TabsTrigger value="available" className="py-3 text-lg">
+                Available
+              </TabsTrigger>
+            </TabsList>
 
-                    <CardContent className="space-y-4">
-                      {/* Progress */}
+            <TabsContent value="active" className="space-y-4">
+              {myChallenges.map(challenge => (
+                <Card
+                  key={challenge.id}
+                  className="border-border bg-card/80 backdrop-blur-sm"
+                >
+                  <CardHeader>
+                    <div className="flex items-start justify-between">
                       <div className="space-y-2">
-                        <div className="flex justify-between text-sm">
-                          <span>Progress</span>
-                          <span>
-                            {challenge.mySubmissions}/
-                            {challenge.requiredSubmissions} submissions
-                          </span>
+                        <div className="flex items-center gap-2">
+                          <CardTitle className="text-lg">
+                            {challenge.title}
+                          </CardTitle>
+                          <Badge className={getStatusColor(challenge.status)}>
+                            {challenge.status}
+                          </Badge>
                         </div>
-                        <Progress value={challenge.progress} className="h-2" />
+                        <p className="text-muted-foreground text-sm">
+                          by {challenge.daoName}
+                        </p>
                       </div>
-
-                      {/* Stats */}
-                      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                        <div className="space-y-1">
-                          <p className="text-muted-foreground text-xs">
-                            Entry Fee
-                          </p>
+                      {challenge.result && (
+                        <div
+                          className={`text-right ${getResultColor(challenge.result)}`}
+                        >
                           <div className="flex items-center gap-1">
-                            <DollarSign className="h-3 w-3" />
-                            <span className="text-sm font-medium">
-                              ${challenge.entryFee}
+                            {challenge.result === 'success' ? (
+                              <CheckCircle className="h-4 w-4" />
+                            ) : (
+                              <AlertCircle className="h-4 w-4" />
+                            )}
+                            <span className="font-medium capitalize">
+                              {challenge.result}
                             </span>
                           </div>
-                        </div>
-                        <div className="space-y-1">
-                          <p className="text-muted-foreground text-xs">
-                            Participants
-                          </p>
-                          <div className="flex items-center gap-1">
-                            <Users className="h-3 w-3" />
-                            <span className="text-sm font-medium">
-                              {challenge.participants}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="space-y-1">
-                          <p className="text-muted-foreground text-xs">
-                            Time Left
-                          </p>
-                          <div className="flex items-center gap-1">
-                            <Clock className="h-3 w-3" />
-                            <span className="text-sm font-medium">
-                              {challenge.status === 'active'
-                                ? `${challenge.daysLeft} days`
-                                : 'Ended'}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="space-y-1">
-                          <p className="text-muted-foreground text-xs">
-                            End Date
-                          </p>
-                          <div className="flex items-center gap-1">
-                            <Calendar className="h-3 w-3" />
-                            <span className="text-sm font-medium">
-                              {challenge.endDate}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Actions */}
-                      {challenge.status === 'active' && (
-                        <div className="flex gap-2">
-                          <Button size="sm">
-                            <Upload className="mr-2 h-4 w-4" />
-                            Submit Progress
-                          </Button>
-                          <Button variant="outline" size="sm">
-                            View Details
-                          </Button>
+                          {challenge.reward && (
+                            <p className="mt-1 text-sm">
+                              +${challenge.reward} earned
+                            </p>
+                          )}
                         </div>
                       )}
-                    </CardContent>
-                  </Card>
-                ))}
-              </TabsContent>
+                    </div>
+                  </CardHeader>
 
-              <TabsContent value="available" className="space-y-4">
-                {availableChallenges.map(challenge => (
-                  <Card key={challenge.id}>
-                    <CardHeader>
-                      <div className="flex items-start justify-between">
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-2">
-                            <CardTitle className="text-lg">
-                              {challenge.title}
-                            </CardTitle>
-                            <Badge variant="secondary">
-                              {challenge.category}
-                            </Badge>
-                          </div>
-                          <p className="text-muted-foreground text-sm">
-                            by {challenge.daoName}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-sm font-medium">
-                            ${challenge.entryFee} USDT
-                          </p>
-                          <p className="text-muted-foreground text-xs">
-                            Entry Fee
-                          </p>
+                  <CardContent className="space-y-4">
+                    {/* Progress */}
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>Progress</span>
+                        <span>
+                          {challenge.mySubmissions}/
+                          {challenge.requiredSubmissions} submissions
+                        </span>
+                      </div>
+                      <Progress value={challenge.progress} className="h-2" />
+                    </div>
+
+                    {/* Stats */}
+                    <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                      <div className="space-y-1">
+                        <p className="text-muted-foreground text-xs">
+                          Entry Fee
+                        </p>
+                        <div className="flex items-center gap-1">
+                          <DollarSign className="h-3 w-3" />
+                          <span className="text-sm font-medium">
+                            ${challenge.entryFee}
+                          </span>
                         </div>
                       </div>
-                    </CardHeader>
-
-                    <CardContent className="space-y-4">
-                      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                        <div className="space-y-1">
-                          <p className="text-muted-foreground text-xs">
-                            Participants
-                          </p>
+                      <div className="space-y-1">
+                        <p className="text-muted-foreground text-xs">
+                          Participants
+                        </p>
+                        <div className="flex items-center gap-1">
+                          <Users className="h-3 w-3" />
                           <span className="text-sm font-medium">
-                            {challenge.participants}/{challenge.maxParticipants}
+                            {challenge.participants}
                           </span>
                         </div>
-                        <div className="space-y-1">
-                          <p className="text-muted-foreground text-xs">
-                            Success Rate
-                          </p>
-                          <span className="text-sm font-medium text-green-500">
-                            {challenge.successRate}%
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-muted-foreground text-xs">
+                          Time Left
+                        </p>
+                        <div className="flex items-center gap-1">
+                          <Clock className="h-3 w-3" />
+                          <span className="text-sm font-medium">
+                            {challenge.status === 'active'
+                              ? `${challenge.daysLeft} days`
+                              : 'Ended'}
                           </span>
                         </div>
-                        <div className="space-y-1">
-                          <p className="text-muted-foreground text-xs">Ends</p>
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-muted-foreground text-xs">
+                          End Date
+                        </p>
+                        <div className="flex items-center gap-1">
+                          <Calendar className="h-3 w-3" />
                           <span className="text-sm font-medium">
                             {challenge.endDate}
                           </span>
                         </div>
-                        <div className="space-y-1">
-                          <p className="text-muted-foreground text-xs">
-                            Spots Left
-                          </p>
-                          <span className="text-sm font-medium">
-                            {challenge.maxParticipants - challenge.participants}
-                          </span>
-                        </div>
                       </div>
+                    </div>
 
+                    {/* Actions */}
+                    {challenge.status === 'active' && (
                       <div className="flex gap-2">
-                        <Button>
-                          Join Challenge (${challenge.entryFee} USDT)
+                        <Button size="sm">
+                          <Upload className="mr-2 h-4 w-4" />
+                          Submit Progress
                         </Button>
-                        <Button variant="outline">View Details</Button>
+                        <Button variant="outline" size="sm">
+                          View Details
+                        </Button>
                       </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </TabsContent>
-            </Tabs>
-          </div>
-        </main>
-      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </TabsContent>
+
+            <TabsContent value="available" className="space-y-4">
+              {availableChallenges.map(challenge => (
+                <Card
+                  key={challenge.id}
+                  className="border-border bg-card/80 backdrop-blur-sm"
+                >
+                  <CardHeader>
+                    <div className="flex items-start justify-between">
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <CardTitle className="text-lg">
+                            {challenge.title}
+                          </CardTitle>
+                          <Badge variant="secondary">
+                            {challenge.category}
+                          </Badge>
+                        </div>
+                        <p className="text-muted-foreground text-sm">
+                          by {challenge.daoName}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-medium">
+                          ${challenge.entryFee} USDT
+                        </p>
+                        <p className="text-muted-foreground text-xs">
+                          Entry Fee
+                        </p>
+                      </div>
+                    </div>
+                  </CardHeader>
+
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                      <div className="space-y-1">
+                        <p className="text-muted-foreground text-xs">
+                          Participants
+                        </p>
+                        <span className="text-sm font-medium">
+                          {challenge.participants}/{challenge.maxParticipants}
+                        </span>
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-muted-foreground text-xs">
+                          Success Rate
+                        </p>
+                        <span className="text-sm font-medium text-green-500">
+                          {challenge.successRate}%
+                        </span>
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-muted-foreground text-xs">Ends</p>
+                        <span className="text-sm font-medium">
+                          {challenge.endDate}
+                        </span>
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-muted-foreground text-xs">
+                          Spots Left
+                        </p>
+                        <span className="text-sm font-medium">
+                          {challenge.maxParticipants - challenge.participants}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2">
+                      <Button>
+                        Join Challenge (${challenge.entryFee} USDT)
+                      </Button>
+                      <Button variant="outline">View Details</Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </TabsContent>
+          </Tabs>
+        </div>
+      </main>
     </div>
   );
 }
