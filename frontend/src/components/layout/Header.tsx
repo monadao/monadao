@@ -1,7 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Menu, X, Wallet, ChevronDown } from 'lucide-react';
+import { Menu, X, ChevronDown } from 'lucide-react';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { useAccount, useDisconnect } from 'wagmi';
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -35,19 +37,19 @@ export default function Header() {
                 href="#"
                 className="text-gray-500 hover:text-monad-600 px-3 py-2 rounded-md text-sm font-medium"
               >
-                Proposals
+                Challenges
               </a>
               <a
                 href="#"
                 className="text-gray-500 hover:text-monad-600 px-3 py-2 rounded-md text-sm font-medium"
               >
-                Treasury
+                My DAOs
               </a>
               <a
                 href="#"
                 className="text-gray-500 hover:text-monad-600 px-3 py-2 rounded-md text-sm font-medium"
               >
-                Members
+                Create DAO
               </a>
               <div className="relative group">
                 <button className="text-gray-500 hover:text-monad-600 px-3 py-2 rounded-md text-sm font-medium flex items-center">
@@ -60,10 +62,82 @@ export default function Header() {
 
           {/* Connect Wallet Button */}
           <div className="hidden md:block">
-            <button className="bg-monad-600 hover:bg-monad-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center space-x-2 transition-colors">
-              <Wallet className="h-4 w-4" />
-              <span>Connect Wallet</span>
-            </button>
+            <ConnectButton.Custom>
+              {({
+                account,
+                chain,
+                openAccountModal,
+                openChainModal,
+                openConnectModal,
+                mounted,
+              }) => {
+                const ready = mounted;
+                const connected = ready && account && chain;
+
+                return (
+                  <div
+                    {...(!ready && {
+                      'aria-hidden': true,
+                      style: {
+                        opacity: 0,
+                        pointerEvents: 'none',
+                        userSelect: 'none',
+                      },
+                    })}
+                  >
+                    {(() => {
+                      if (!connected) {
+                        return (
+                          <button
+                            onClick={openConnectModal}
+                            className="bg-monad-600 hover:bg-monad-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                          >
+                            Connect Wallet
+                          </button>
+                        );
+                      }
+
+                      if (chain.unsupported) {
+                        return (
+                          <button
+                            onClick={openChainModal}
+                            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                          >
+                            Wrong Network
+                          </button>
+                        );
+                      }
+
+                      return (
+                        <div className="flex items-center space-x-3">
+                          {chain.hasIcon && (
+                            <button
+                              onClick={openChainModal}
+                              className="flex items-center space-x-1 bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
+                            >
+                              {chain.iconUrl && (
+                                <img
+                                  alt={chain.name ?? 'Chain icon'}
+                                  src={chain.iconUrl}
+                                  className="w-4 h-4"
+                                />
+                              )}
+                              <span className="text-gray-700">{chain.name}</span>
+                            </button>
+                          )}
+                          <button
+                            onClick={openAccountModal}
+                            className="bg-monad-600 hover:bg-monad-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                          >
+                            {account.displayName}
+                          </button>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                );
+              }}
+            </ConnectButton.Custom>
           </div>
 
           {/* Mobile menu button */}
@@ -95,24 +169,23 @@ export default function Header() {
                 href="#"
                 className="text-gray-500 hover:text-monad-600 block px-3 py-2 rounded-md text-base font-medium"
               >
-                Proposals
+                Challenges
               </a>
               <a
                 href="#"
                 className="text-gray-500 hover:text-monad-600 block px-3 py-2 rounded-md text-base font-medium"
               >
-                Treasury
+                My DAOs
               </a>
               <a
                 href="#"
                 className="text-gray-500 hover:text-monad-600 block px-3 py-2 rounded-md text-base font-medium"
               >
-                Members
+                Create DAO
               </a>
-              <button className="w-full mt-4 bg-monad-600 hover:bg-monad-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center space-x-2">
-                <Wallet className="h-4 w-4" />
-                <span>Connect Wallet</span>
-              </button>
+              <div className="mt-4">
+                <ConnectButton />
+              </div>
             </div>
           </div>
         )}
