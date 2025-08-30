@@ -363,13 +363,13 @@ export default function ChallengesPage() {
                           </div>
 
                           <div className="flex gap-2">
-                            <Link href={`/challenge/${challenge.id}`}>
+                            <Link href={`/challenge?id=${challenge.id}`}>
                               <Button>
                                 Join Challenge (${challenge.participationFee}{' '}
                                 USDT)
                               </Button>
                             </Link>
-                            <Link href={`/challenge/${challenge.id}`}>
+                            <Link href={`/challenge?id=${challenge.id}`}>
                               <Button variant="outline">View Details</Button>
                             </Link>
                           </div>

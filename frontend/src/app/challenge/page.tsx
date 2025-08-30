@@ -1,7 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import { Navbar } from '@/components/layout/Navbar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -33,9 +32,14 @@ import {
 import { useAccount } from 'wagmi';
 
 export default function ChallengeDetailPage() {
-  const params = useParams();
   const { address } = useAccount();
-  const taskId = Number(params?.id || 0);
+  const [taskId, setTaskId] = useState(1);
+  
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
+    if (id) setTaskId(Number(id));
+  }, []);
 
   const task = useTask(taskId);
   const participant = useParticipant(taskId);

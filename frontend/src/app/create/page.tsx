@@ -340,23 +340,6 @@ export default function CreateDAOPage() {
                   </div>
                 </div>
 
-                {/* Deployment Cost */}
-                <div className="bg-accent rounded-lg p-4">
-                  <h4 className="text-accent-foreground mb-2 font-medium">
-                    Deployment Cost
-                  </h4>
-                  <div className="text-muted-foreground space-y-1 text-sm">
-                    <div className="flex justify-between">
-                      <span>DAO Contract:</span>
-                      <span>~0.05 MON</span>
-                    </div>
-                    <div className="flex justify-between font-medium">
-                      <span>Total:</span>
-                      <span>~0.08 MON</span>
-                    </div>
-                  </div>
-                </div>
-
                 <div className="flex justify-between">
                   <Button variant="outline" onClick={handleBack}>
                     Back
